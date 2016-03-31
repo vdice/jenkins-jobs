@@ -151,4 +151,15 @@ repos.each { Map repo ->
       }
     }
   }
+
+  // This creates a Build Pipeline view located at
+  // ${JENKINS_URL}/view/<component_job>
+  buildPipelineView(name) {
+      filterBuildQueue()
+      filterExecutors()
+      displayedBuilds(defaults.maxTotalConcurrentBuilds)
+      selectedJob(downstreamJobName)
+      refreshFrequency(60)
+      showPipelineParameters()
+  }
 }
