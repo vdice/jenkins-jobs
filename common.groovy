@@ -31,4 +31,7 @@ defaults = [
     teamDomain: 'deis',
     channel: '#testing',
   ],
+  k8sClaimer: [
+    repoName: 'k8s-claimer'
+  ],
 ]

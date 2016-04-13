@@ -142,7 +142,10 @@ import utilities.StatusUpdater
 
         set -eo pipefail
 
-        ./ci.sh
+        # upstream lease claim job should have passed down necessary outputs
+        # in form of env vars
+        # echo $KUBECONFIG > ~/.kube/config
+        # ./ci.sh
         if [ "\${COMMIT}" == "true" ]; then
           ${defaults.bumpverCommitCmd}
         fi
