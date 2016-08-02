@@ -1,3 +1,4 @@
+def WORKSPACE = System.getenv("WORKSPACE") ?: new File(".").getAbsolutePath()
 evaluate(new File("${WORKSPACE}/common.groovy"))
 
 repos.each { Map repo ->
@@ -111,7 +112,7 @@ repos.each { Map repo ->
             cdComponentDir = component.name == repo.name ?: "cd ${component.name}"
             dockerPush = isPR ? 'docker-immutable-push' : 'docker-push'
 
-            script = main
+            def script = main
             script += """
               #!/usr/bin/env bash
 
