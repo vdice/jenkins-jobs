@@ -1,3 +1,4 @@
+def WORKSPACE = System.getenv("WORKSPACE") ?: new File(".").getAbsolutePath()
 evaluate(new File("${WORKSPACE}/repo.groovy"))
 
 WORKFLOW_RELEASE = 'v2.4.2'
@@ -11,7 +12,7 @@ defaults = [
     master: "${TEST_JOB_ROOT_NAME}",
     pr: "${TEST_JOB_ROOT_NAME}-pr",
     release: "${TEST_JOB_ROOT_NAME}-release",
-    reportMsg: "Test Report: ${JENKINS_URL}job/\${JOB_NAME}/\${BUILD_NUMBER}/testReport",
+    reportMsg: "Test Report: ${System.getenv('JENKINS_URL')}job/\${JOB_NAME}/\${BUILD_NUMBER}/testReport",
     timeoutMins: 30,
   ],
   maxBuildsPerNode: 1,
