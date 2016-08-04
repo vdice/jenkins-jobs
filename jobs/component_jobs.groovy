@@ -97,6 +97,7 @@ repos.each { Map repo ->
       steps {
         dockerPush = isPR ? 'docker-immutable-push' : 'docker-push'
 
+        shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
         shell new File("${WORKSPACE}/bash/scripts/get_actual_commit.sh").text
         shell new File("${WORKSPACE}/bash/scripts/get_commit_author.sh").text
 
@@ -107,10 +108,10 @@ repos.each { Map repo ->
 
         # pass along appropriate commit via properties file
         if [ -z "\${ghprbActualCommit}" ]; then
-          echo ${repo.commitEnvVar}="\${GIT_COMMIT}" >> "\${WORKSPACE}/env.properties"
+          echo ${repo.commitEnvVar}="\${GIT_COMMIT}" >> ${defaults.envFile}
         else
           echo "PR build, setting ${repo.commitEnvVar} to '\${ghprbActualCommit}', the actual PR commit"
-          echo ${repo.commitEnvVar}="\${ghprbActualCommit}" >> "\${WORKSPACE}/env.properties"
+          echo ${repo.commitEnvVar}="\${ghprbActualCommit}" >> ${defaults.envFile}
         fi
 
         """.stripIndent().trim()
@@ -144,7 +145,7 @@ repos.each { Map repo ->
               downstreamParameterized {
                 trigger(downstreamJobName) {
                   parameters {
-                    propertiesFile('${WORKSPACE}/env.properties')
+                    propertiesFile(defaults.envFile)
                     predefinedProps([
                       'UPSTREAM_BUILD_URL': '${BUILD_URL}',
                       'UPSTREAM_SLACK_CHANNEL': "${repo.slackChannel}",

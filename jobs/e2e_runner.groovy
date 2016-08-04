@@ -89,6 +89,8 @@ import utilities.StatusUpdater
     }
 
     steps {
+      shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
+      
       shell 'make docker-test'
 
       shell """
@@ -101,7 +103,6 @@ import utilities.StatusUpdater
         docker login -e="\$QUAY_EMAIL" -u="\$QUAY_USERNAME" -p="\$QUAY_PASSWORD" quay.io
         DEIS_REGISTRY=quay.io/ make docker-build ${dockerPush}
 
-        mkdir -p ${defaults.tmpPath}
         eval \$(make image)
         # if triggered by pull request plugin, use ghprbActualCommit
         export ACTUAL_COMMIT="\${ghprbActualCommit}"

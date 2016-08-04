@@ -1,8 +1,10 @@
 #!/usr/bin/env bats
 
 setup() {
-  . "${BATS_TEST_DIRNAME}/../scripts/commit_description_parser.sh"
   load stub
+  TMP_PATH="${BATS_TEST_DIRNAME}/tmp"
+  ENV_PROPS_FILEPATH="${TMP_PATH}/env.properties"
+  . "${BATS_TEST_DIRNAME}/../scripts/commit_description_parser.sh"
 }
 
 teardown() {

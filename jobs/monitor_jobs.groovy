@@ -104,6 +104,9 @@ dirs.each { Map dir ->
 
       steps {
         dockerPush = isPR ? 'docker-immutable-push' : 'docker-push'
+
+        shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
+
         shell """
           #!/usr/bin/env bash
 
@@ -122,7 +125,7 @@ dirs.each { Map dir ->
           if [ -z "\${ghprbActualCommit}" ]; then
             export ACTUAL_COMMIT="\${sha1}"
           fi
-          echo ACTUAL_COMMIT="\${ACTUAL_COMMIT}" > \${WORKSPACE}/env.properties
+          echo ACTUAL_COMMIT="\${ACTUAL_COMMIT}" > ${defaults.envFile}
         """.stripIndent().trim()
       }
     }

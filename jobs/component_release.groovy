@@ -56,6 +56,8 @@ repos.each { Map repo ->
     }
 
     steps {
+      shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
+
       shell """
         #!/usr/bin/env bash
 
@@ -70,7 +72,7 @@ repos.each { Map repo ->
         conditionalSteps {
           condition {
             not {
-              shell 'cat "${WORKSPACE}/env.properties" | grep -q SKIP_RELEASE'
+              shell "cat ${defaults.envFile} | grep -q SKIP_RELEASE"
             }
           }
           steps {
@@ -82,7 +84,7 @@ repos.each { Map repo ->
                   unstable('UNSTABLE')
                 }
                 parameters {
-                  propertiesFile('${WORKSPACE}/env.properties')
+                  propertiesFile(defaults.envFile)
                 }
               }
             }
@@ -97,7 +99,7 @@ repos.each { Map repo ->
             status('SUCCESS', 'SUCCESS')
           } {
             not {
-              shell 'cat "${WORKSPACE}/env.properties" | grep -q SKIP_RELEASE'
+              shell "cat ${defaults.envFile} | grep -q SKIP_RELEASE"
             }
           }
         }
@@ -110,7 +112,7 @@ repos.each { Map repo ->
                 unstable('UNSTABLE')
               }
               parameters {
-                propertiesFile('${WORKSPACE}/env.properties')
+                propertiesFile(defaults.envFile)
               }
             }
           }

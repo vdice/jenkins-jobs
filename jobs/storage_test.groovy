@@ -71,6 +71,8 @@ name = "storagetype_e2e"
   }
 
   steps {
+    shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
+
     shell 'make docker-test'
 
     shell """
@@ -78,7 +80,6 @@ name = "storagetype_e2e"
 
       set -eo pipefail
 
-      mkdir -p ${defaults.tmpPath}
       if [ \${STORAGE_TYPE} == "gcs" ]; then
         export TYPE="GCS"
       else

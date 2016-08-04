@@ -4,7 +4,7 @@ set -eo pipefail
 
 # Breaks up a <COMPONENT>_SHA env var into component name and sha
 main() {
-  envPropsFilepath="${ENV_PROPS_FILEPATH:-${WORKSPACE}/${BUILD_NUMBER}/env.properties}"
+  envPropsFilepath="${ENV_PROPS_FILEPATH:-$/tmp/${JOB_NAME}/${BUILD_NUMBER}/env.properties}"
 
   # populate env_var_array with all <COMPONENT>_SHA env vars
   IFS=' ' read -r -a env_var_array <<< "$(compgen -A variable | grep _SHA)"

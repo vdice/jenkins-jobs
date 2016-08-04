@@ -4,10 +4,7 @@ set -eo pipefail
 
 # Gets actual commit for reporting status and potentially tagging Docker image
 main() {
-  envPropsFilepath="/dev/null"
-  if [ -n "${JENKINS_HOME}" ]; then
-    envPropsFilepath="${WORKSPACE}/env.properties"
-  fi
+  envPropsFilepath="${ENV_PROPS_FILEPATH:-/tmp/${JOB_NAME}/${BUILD_NUMBER}/env.properties}"
 
   export ACTUAL_COMMIT="${sha1}"
   # if triggered by pull request plugin, use ghprbActualCommit

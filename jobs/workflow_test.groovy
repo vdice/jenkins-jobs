@@ -127,6 +127,8 @@ import utilities.StatusUpdater
     }
 
     steps {
+      shell new File("${WORKSPACE}/bash/scripts/setup_tmp_path.sh").text
+
       if (isPR) { // update commit with pending status while tests run
         shell StatusUpdater.updateStatus(
           commitStatus: 'pending', repoName: '${COMPONENT_REPO}', commitSHA: '${ACTUAL_COMMIT}', description: 'Running e2e tests...')
@@ -139,14 +141,14 @@ import utilities.StatusUpdater
         conditionalSteps {
           condition {
             not {
-              shell 'cat "${WORKSPACE}/${BUILD_NUMBER}/env.properties" | grep -q SKIP_COMPONENT_PROMOTE'
+              shell "cat ${defaults.envFile} | grep -q SKIP_COMPONENT_PROMOTE"
             }
           }
           steps {
             downstreamParameterized {
               trigger('component-promote') {
                 parameters {
-                  propertiesFile('${WORKSPACE}/${BUILD_NUMBER}/env.properties')
+                  propertiesFile(defaults.envFile)
                 }
               }
             }

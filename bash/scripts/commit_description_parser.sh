@@ -2,12 +2,7 @@
 set -eo pipefail
 
 main() {
-  envPropsFilepath="/dev/null"
-  if [ -n "${JENKINS_HOME}" ]; then
-    envPropsFilepath="${WORKSPACE}/env.properties"
-  fi
-
-  parse-commit-description "${ghprbPullLongDescription}" >> "${envPropsFilepath}"
+  parse-commit-description "${ghprbPullLongDescription}" >> "${ENV_PROPS_FILEPATH:-/tmp/${JOB_NAME}/${BUILD_NUMBER}/env.properties}"
 }
 
 # parse-commit-description parses a commit description for any required sibling
