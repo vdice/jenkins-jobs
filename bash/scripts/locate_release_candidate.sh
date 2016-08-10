@@ -32,8 +32,15 @@ main() {
   component_name="${COMPONENT_NAME:-$(basename "$(git rev-parse --show-toplevel)")}"
   component_env_var="$(echo "${component_name}" | perl -ne 'print uc' | sed 's/-/_/g')"_SHA
   git_commit="${COMPONENT_SHA:-$(git rev-parse HEAD)}"
-  candidate_image=quay.io/deis/"${component_name}":git-"${git_commit:0:7}"
 
+  if [ "${component_name}" == 'monitor' ]; then
+    # all monitor sub-component candidates share the same monitor sha
+    # just pick one to locate -- if one exists, they all should.
+    candidate_image=quay.io/deis/grafana:git-"${git_commit:0:7}"
+  else
+    candidate_image=quay.io/deis/"${component_name}":git-"${git_commit:0:7}"
+  fi
+  
   echo "Locating candidate release image ${candidate_image}..."
   docker pull "${candidate_image}"
 

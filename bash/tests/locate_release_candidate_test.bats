@@ -70,3 +70,23 @@ teardown() {
   [ "${lines[1]}" = "Locating candidate release image quay.io/deis/my-component:git-abc1234..." ]
   [ "$(cmp ${BATS_TEST_DIRNAME}/tmp/env.properties ${BATS_TEST_DIRNAME}/tmp/expected.env.properties)" = "" ]
 }
+
+@test "main : COMPONENT_NAME is monitor" {
+  export TAG="foo-tag"
+  export GIT_BRANCH="origin/tags/foo-tag"
+  export COMPONENT_NAME="monitor"
+  export COMPONENT_SHA="abc1234def5678"
+
+  # expected env.properties output
+  { echo COMPONENT_NAME=monitor; \
+    echo COMPONENT_SHA=abc1234def5678; \
+    echo RELEASE_TAG=foo-tag; \
+    echo MONITOR_SHA=abc1234def5678; } > ${BATS_TEST_DIRNAME}/tmp/expected.env.properties
+
+  run main
+
+  [ "${status}" -eq 0 ]
+  [ "${lines[0]}" = "TAG set to 'foo-tag', attempting release of this tag..." ]
+  [ "${lines[1]}" = "Locating candidate release image quay.io/deis/grafana:git-abc1234..." ]
+  [ "$(cmp ${BATS_TEST_DIRNAME}/tmp/env.properties ${BATS_TEST_DIRNAME}/tmp/expected.env.properties)" = "" ]
+}

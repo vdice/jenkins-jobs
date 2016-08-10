@@ -124,6 +124,19 @@ dirs.each { Map dir ->
           fi
           echo ACTUAL_COMMIT="\${ACTUAL_COMMIT}" > \${WORKSPACE}/env.properties
         """.stripIndent().trim()
+
+        if (isMaster) {
+          downstreamParameterized {
+            trigger('component-promote') {
+              parameters {
+                predefinedProps([
+                  'COMPONENT_NAME': "monitor",
+                  'COMPONENT_SHA': '${GIT_COMMIT}',
+                ])
+              }
+            }
+          }
+        }
       }
     }
   }
