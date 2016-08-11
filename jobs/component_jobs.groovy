@@ -124,6 +124,7 @@ repos.each { Map repo ->
           export \$(cat "\${WORKSPACE}/env.properties" | xargs)
 
           make bootstrap || true
+          make test || true
 
           export IMAGE_PREFIX=deisci
           docker login -e="\$DOCKER_EMAIL" -u="\$DOCKER_USERNAME" -p="\$DOCKER_PASSWORD"
