@@ -2,7 +2,7 @@ evaluate(new File("${WORKSPACE}/common.groovy"))
 
 repoName="workflow-cli"
 
-job("${repoName}-tag-release") {
+job("${repoName}-release") {
   description """
     <li>Watches the ${repoName} repo for a new tag to be pushed. (Assumed to be '\${RELEASE}')</li>
     <li>It then checks out the \${RELEASE} tag and builds and deploys binaries, optionally kicking off e2e (default: false)</li>
@@ -13,9 +13,9 @@ job("${repoName}-tag-release") {
       remote {
         github("deis/${repoName}")
         credentials('597819a0-b0b9-4974-a79b-3a5c2322606d')
-        refspec('+refs/tags/${RELEASE}:refs/remotes/origin/tags/${RELEASE}')
+        refspec('+refs/tags/*:refs/remotes/origin/tags/*')
       }
-      branch('refs/tags/${RELEASE}')
+      branch('*/tags/*')
     }
   }
 
