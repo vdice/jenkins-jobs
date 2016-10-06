@@ -102,6 +102,28 @@ repos.each { Map repo ->
             }
           }
         }
+
+        if (repo.chart) {
+          conditionalSteps {
+            condition {
+              status('SUCCESS', 'SUCCESS')
+            }
+            steps {
+              downstreamParameterized {
+                trigger("${repo.chart}-chart-publish") {
+                  block {
+                    buildStepFailure('FAILURE')
+                    failure('FAILURE')
+                    unstable('UNSTABLE')
+                  }
+                  parameters {
+                    predefinedProp('RELEASE_TAG', '${RELEASE_TAG}')
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
