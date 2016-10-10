@@ -2,6 +2,13 @@ def workspace = new File(".").getAbsolutePath()
 if (!new File("${workspace}/common.groovy").canRead()) { workspace = "${WORKSPACE}"}
 evaluate(new File("${workspace}/common.groovy"))
 
+// For testing this job
+repos = [[name: 'router',
+          components: [[name: 'router']],
+          slackChannel: '#router',
+          runE2e: true,
+          chart: 'router']]
+
 repos.each { Map repo ->
   if (repo.chart) {
     job("${repo.chart}-chart-publish") {
@@ -10,11 +17,13 @@ repos.each { Map repo ->
       scm {
         git {
           remote {
-            github("deis/${repo.name}")
+            // github("deis/${repo.name}")
+            github("kmala/${repo.name}")
             credentials('597819a0-b0b9-4974-a79b-3a5c2322606d')
-            refspec('+refs/tags/*:refs/remotes/origin/tags/*')
+            // refspec('+refs/tags/*:refs/remotes/origin/tags/*')
           }
-          branch('*/tags/*')
+          // branch('*/tags/*')
+          branch('charts')
         }
       }
 
@@ -30,7 +39,7 @@ repos.each { Map repo ->
                   steps {
                     shell new File("${workspace}/bash/scripts/slack_notify.sh").text +
                       """
-                        slack-notify ${repo.slackChannel} ${buildStatus}
+                        slack-notify "${repo.slackChannel}" "${buildStatus}"
                       """.stripIndent().trim()
                   }
                 }
