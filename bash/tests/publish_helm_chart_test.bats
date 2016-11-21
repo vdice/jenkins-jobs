@@ -74,11 +74,14 @@ setup-chart-workspace() {
   repo_type='pr'
   setup-chart-workspace "${chart}"
 
+  echo '"deisci" "Always" canary' > "${WORKDIR}/${chart}/values.yaml"
+
   run publish-helm-chart "${chart}" "${repo_type}"
 
   [ "${status}" -eq 0 ]
   [ "$(cat "${WORKDIR}/${chart}/Chart.yaml")" == "${EXPECTED_PRERELEASE_TAG}-sha.ghi7891" ]
   [ "$(cat "${WORKDIR}/env.file")" == "COMPONENT_CHART_VERSION=${EXPECTED_PRERELEASE_TAG}-sha.ghi7891" ]
+  [ "$(cat "${WORKDIR}/${chart}/values.yaml")" == "\"deisci\" \"Always\" canary" ]
 }
 
 
