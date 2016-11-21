@@ -84,6 +84,28 @@ setup-chart-workspace() {
   [ "$(cat "${WORKDIR}/${chart}/values.yaml")" == "\"deisci\" \"Always\" canary" ]
 }
 
+@test "publish-helm-chart: component pr" {
+  chart='router'
+  repo_type='pr'
+  setup-chart-workspace "${chart}"
+
+  run publish-helm-chart "${chart}" "${repo_type}"
+
+  [ "${status}" -eq 0 ]
+  [ "$(cat "${WORKDIR}/${chart}/Chart.yaml")" == "${EXPECTED_PRERELEASE_TAG}-sha.${SHORT_SHA}" ]
+}
+
+@test "publish-helm-chart: component pr, ACTUAL_COMMIT set" {
+  ACTUAL_COMMIT='ghi78912345'
+  chart='router'
+  repo_type='pr'
+  setup-chart-workspace "${chart}"
+
+  run publish-helm-chart "${chart}" "${repo_type}"
+
+  [ "${status}" -eq 0 ]
+  [ "$(cat "${WORKDIR}/${chart}/Chart.yaml")" == "${EXPECTED_PRERELEASE_TAG}-sha.ghi7891" ]
+}
 
 @test "publish-helm-chart: component production" {
   chart='router'
@@ -175,7 +197,6 @@ setup-chart-workspace() {
   [ "$(cat "${WORKDIR}/${chart}/values.yaml")" == 'versions-staging.deis.com doctor-staging.deis.com' ]
   [ "$(cat "${WORKDIR}/env.file")" == "WORKFLOW_TAG=${EXPECTED_PRERELEASE_TAG}-sha.${SHORT_SHA}" ]
 }
-
 
 @test "publish-helm-chart: workflow pr; COMPONENT_REPO, COMPONENT_CHART_VERSION and ACTUAL_COMMIT in env" {
   COMPONENT_REPO=registry-proxy
