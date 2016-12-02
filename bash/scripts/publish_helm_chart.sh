@@ -11,8 +11,10 @@ publish-helm-chart() {
   local chart="${1}"
   local repo_type="${2}"
 
-  # give ACTUAL_COMMIT precedence
-  if [ -n "${ACTUAL_COMMIT}" ]; then
+  # give ACTUAL_COMMIT precedence for use in chart versioning, assuming COMPONENT_REPO is empty/null
+  # otherwise, ACTUAL_COMMIT is tied to the COMPONENT_REPO for use in assembling the workflow chart below
+  # shellcheck disable=SC2153
+  if [ -n "${ACTUAL_COMMIT}" ] && [ -z "${COMPONENT_REPO}" ]; then
     SHORT_SHA="${ACTUAL_COMMIT:0:7}"
   fi
 
