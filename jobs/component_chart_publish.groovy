@@ -5,6 +5,7 @@ evaluate(new File("${workspace}/common.groovy"))
 repos.each { Map repo ->
   if (repo.chart) {
     def chart = repo.chart
+
     def jobName = "${chart}-chart-publish"
     job(jobName) {
       description "Publishes a new ${chart} chart release to the chart repo determined by CHART_REPO_TYPE."
@@ -59,10 +60,14 @@ repos.each { Map repo ->
       }
 
       parameters {
-        choiceParam('CHART_REPO_TYPE', ['dev', 'pr', 'staging', 'production'], 'Type of chart repo for publishing (default: dev)')
+        nodeParam('NODE') {
+          description('select node (must be node7-ec2 if chart is to be signed)')
+        }
+        choiceParam('CHART_REPO_TYPE', ['dev', 'pr', 'production'], 'Type of chart repo for publishing (default: dev)')
         stringParam('RELEASE_TAG', '', 'Release tag (Default: empty, will use latest git tag for repo)')
         stringParam('HELM_VERSION', defaults.helm.version, 'Version of Helm to download/use')
         stringParam('ACTUAL_COMMIT', '', "Component commit SHA")
+        booleanParam('SIGN_CHART', false, "Sign chart? (default: false/no)")
       }
 
       wrappers {
@@ -79,7 +84,6 @@ repos.each { Map repo ->
 
       steps {
         shell new File("${workspace}/bash/scripts/helm_chart_actions.sh").text +
-              new File("${workspace}/bash/scripts/publish_helm_chart.sh").text +
           """
             export ENV_FILE_PATH="${defaults.envFile}"
             mkdir -p ${defaults.tmpPath}

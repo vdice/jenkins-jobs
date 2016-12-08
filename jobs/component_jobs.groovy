@@ -79,10 +79,10 @@ repos.each { Map repo ->
               extensions {
                 commitStatus {
                   context('ci/jenkins/pr')
-                  triggeredStatus("Triggering ${repo.name} component build/test pipeline...")
-                  startedStatus("Starting ${repo.name} component build/test pipeline...")
-                  completedStatus('SUCCESS', "${repo.name} component build/test pipeline SUCCESS!")
-                  completedStatus('FAILURE', "${repo.name} component build/test pipeline FAILURE.")
+                  triggeredStatus("Triggering ${repo.name} build/test pipeline...")
+                  startedStatus("Starting ${repo.name} build/test pipeline...")
+                  completedStatus('SUCCESS', "${repo.name} build/test pipeline SUCCESS!")
+                  completedStatus('FAILURE', "${repo.name} build/test pipeline FAILURE.")
                   completedStatus('ERROR', 'Something went wrong.')
                 }
               }

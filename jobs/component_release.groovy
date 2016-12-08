@@ -155,12 +155,12 @@ repos.each { Map repo ->
           }
         }
 
-        // Trigger downstream signing job
+        // Trigger downstream chart signature verification job
         conditionalSteps {
           condition { status('SUCCESS', 'SUCCESS') }
           steps {
             downstreamParameterized {
-              trigger("helm-chart-sign") {
+              trigger("helm-chart-verify") {
                 parameters {
                   predefinedProps([
                     'CHART': repo.chart,
